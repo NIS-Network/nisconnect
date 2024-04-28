@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "likedByProfiles" INTEGER[] DEFAULT ARRAY[]::INTEGER[],
+ADD COLUMN     "likedProfiles" INTEGER[] DEFAULT ARRAY[]::INTEGER[],
+ADD COLUMN     "viewedProfiles" INTEGER[] DEFAULT ARRAY[]::INTEGER[];

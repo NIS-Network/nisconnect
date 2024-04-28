@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum School {
+    akt
+    akb
+    fmalm
+    hbalm
+    ast
+    atr
+    krg
+    kt
+    kst
+    kzl
+    pvl
+    ptr
+    sm
+    tk
+    trz
+    ura
+    ukk
+    fmsh
+    hbsh
+    trk
+}
+
+enum Role {
+    user
+    banned
+    admin
+    superadmin
+}
+
+enum Language {
+    kz
+    en
+    ru
+}
+
+model TemporaryUser {
+    id                          BigInt      @id @unique
+    registrationDate            DateTime    @default(now())
+    acceptedPolicy              Boolean     @default(false)
+    signUpAttempts              Int         @default(0)
+    latestSignUpAttempt         DateTime    @default(now())
+    language                    Language    @default(en)
+}
+
+model User {
+    id                          BigInt              @id @unique
+    registrationDate            DateTime            @default(now())
+    role                        Role                @default(user)
+    login                       String              @unique
+    school                      School
+    language                    Language
+    profile                     Profile             @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    profileId                   Int                 @unique
+    conversation                Conversation?       @relation(fields: [conversationId], references: [id])
+    conversationId              Int?
+    deleteAccountAttempts       Int                 @default(0)
+    latestDeleteAccountAttempt  DateTime            @default(now())
+    viewedProfiles              Int[]               @default([])
+    likedProfiles               Int[]               @default([])
+    likedByProfiles             Int[]               @default([])
+    reports                     Int[]               @default([])
+}
+
+enum Gender {
+    male
+    female
+}
+
+enum SearchingGender {
+    male
+    female
+    all
+}
+
+enum ProfileStatus {
+    enabled
+    disabled
+}
+
+model Profile {
+    id                  Int                 @id @unique @default(autoincrement())
+    user                User?
+    age                 Int
+    name                String
+    bio                 String
+    gender              Gender
+    searchingGender     SearchingGender
+    photoId             String
+    status              ProfileStatus       @default(enabled)
+}
+
+model Config {
+    id                              Int         @id @unique @default(0)
+    maxSignUpAttempts               Int         @default(3)
+    signUpCoolDown                  Int         @default(86400000)
+    maxDeleteAccountAttempts        Int         @default(3)
+    deleteAccountCoolDown           Int         @default(86400000)
+    defaultConfig                   Int         @default(0)
+    minAllowedAge                   Int         @default(10)
+    superadmin                      BigInt      @default(6033264583)
+    admins                          BigInt[]    @default([])
+    maxQuickMessageVideoDuration    Int         @default(15)
+    minQuickMessageTextLength       Int         @default(3)
+    maxQuickMessageTextLength       Int         @default(100)
+}
+
+model Conversation {
+    id              Int             @id @unique @default(autoincrement())
+    members         User[]
+    membersIds      BigInt[]
+    gender          Gender
+    searchingGender SearchingGender
+    createdAt       DateTime        @default(now())
+}
+
+enum ReportReason {
+    inappropriate
+    afk
+    sales
+    drugs
+    other
+}
+
+model Report {
+    id          Int         @id @unique @default(autoincrement())
+    createdAt   DateTime    @default(now())
+    intruderId  BigInt
+    creatorId     BigInt
+    reason      ReportReason
+}
