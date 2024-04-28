@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Config" ADD COLUMN     "admins" BIGINT[] DEFAULT ARRAY[]::BIGINT[],
-ADD COLUMN     "superadmin" BIGINT NOT NULL DEFAULT 6033264583;

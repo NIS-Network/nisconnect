@@ -1,20 +1,8 @@
-import { Gender, Language, Profile, School, SearchingGender, TemporaryUser, User } from '@prisma/client'
+import { Profile, User } from '@prisma/client'
 import { Scenes, Context as TelegrafContext } from 'telegraf'
 import { Update } from 'telegraf/types'
 
 export interface WizardSession extends Scenes.WizardSessionData {
-    signUp: {
-        temporaryUser: TemporaryUser
-        language: Language
-        login: string
-        school: School
-        age: number
-        gender: Gender
-        searchingGender: SearchingGender
-        name: string
-        bio: string
-        photoId: string
-    }
     admin: {
         scene: string
         update: {
